@@ -661,6 +661,7 @@ function setLang(l){
   document.documentElement.lang=l==='ar'?'ar':l==='zh'?'zh-CN':'en';
   document.documentElement.dir=l==='ar'?'rtl':'ltr';
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('on',b.textContent.trim()==={zh:'中文',en:'EN',ar:'عربي'}[l]));
+  try{const u=new URL(location.href);u.searchParams.set('lang',l);history.replaceState(null,'',u);}catch(e){}
   applyT(); updClkLbl(); render();
 }
 function applyT(){
@@ -711,6 +712,8 @@ function tick(){
 // INIT
 // ════════════════════════════════════════════════
 setTZ('auto');
+const _urlLang=new URLSearchParams(location.search).get('lang');
+if(_urlLang&&['zh','en','ar'].includes(_urlLang)) setLang(_urlLang);  // 按 URL 里的语言初始化
 applyT();
 render();                         // 立即渲染赛程（不依赖网络）
 setTimeout(goToday,300);          // 跳到今天

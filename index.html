@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA 世界杯 2026 · 观赛指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #030711;
+  --bg2: #080f1f;
+  --card: #0d1426;
+  --card-hover: #111b33;
+  --border: #1c2a4a;
+  --border-bright: #2a3f6a;
+  --gold: #f0a500;
+  --gold-dim: #a07010;
+  --gold-light: #ffd166;
+  --text: #dde3f0;
+  --text2: #7888aa;
+  --text3: #4a5a7a;
+  --live: #ff4757;
+  --past: #2a3550;
+  --past-text: #4a5570;
+  --today-glow: rgba(240,165,0,0.15);
+  --r32-color: #00b4d8;
+  --r16-color: #48cae4;
+  --qf-color: #90e0ef;
+  --sf-color: #caf0f8;
+  --final-color: #f0a500;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow Condensed', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background stadium atmosphere */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(240,165,0,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 100%, rgba(0,50,120,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,50,120,0.15) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===================== HEADER ===================== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(3,7,17,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.brand-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  line-height: 1;
+}
+.brand-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* Timezone Toggle */
+.tz-toggle {
+  display: flex;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.tz-btn {
+  position: relative;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 1;
+  white-space: nowrap;
+}
+.tz-btn .tz-name { display: block; font-size: 13px; }
+.tz-btn .tz-label { display: block; font-size: 10px; color: var(--text3); letter-spacing: 2px; }
+.tz-btn.active { color: var(--bg); }
+.tz-btn.active .tz-label { color: rgba(0,0,0,0.5); }
+.tz-slider {
+  position: absolute;
+  top: 2px; bottom: 2px;
+  width: calc(50% - 2px);
+  background: var(--gold);
+  border-radius: 6px;
+  transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+  left: 2px;
+}
+.tz-slider.beijing { left: calc(50%); }
+
+/* Live clock */
+.live-clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.live-clock .clock-time {
+  font-size: 16px;
+  color: var(--text);
+  font-weight: 500;
+}
+.live-clock .clock-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text3);
+}
+
+/* ===================== FILTERS ===================== */
+.filters {
+  position: sticky;
+  top: 70px;
+  z-index: 90;
+  background: rgba(3,7,17,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+.filters-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filters-inner::-webkit-scrollbar { display: none; }
+.filt-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.filt-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.filt-btn.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg);
+}
+
+/* ===================== MAIN ===================== */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===================== DATE GROUP ===================== */
+.date-group { margin-bottom: 32px; }
+.date-group.hidden { display: none; }
+
+.date-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.date-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--text);
+}
+.date-label.today-label { color: var(--gold); }
+.date-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--bg);
+}
+.date-badge.past-badge {
+  background: var(--past);
+  color: var(--text3);
+}
+.date-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.date-line.today-line { background: var(--gold-dim); }
+
+/* ===================== MATCH CARD ===================== */
+.match-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 80px 1fr auto 1fr 90px;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.match-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.match-card:hover {
+  background: var(--card-hover);
+  border-color: var(--border-bright);
+  transform: translateX(2px);
+}
+.match-card.today-card {
+  border-color: var(--gold-dim);
+  background: linear-gradient(135deg, #0d1426 0%, #0f1830 100%);
+  box-shadow: 0 0 20px var(--today-glow);
+}
+.match-card.today-card::before { background: var(--gold); }
+.match-card.past-card {
+  opacity: 0.45;
+  border-color: var(--past);
+}
+.match-card.past-card::before { background: var(--past); }
+
+/* Stage color left bar */
+.match-card.stage-r32::before { background: var(--r32-color); }
+.match-card.stage-r16::before { background: var(--r16-color); }
+.match-card.stage-qf::before { background: var(--qf-color); }
+.match-card.stage-sf::before { background: #a8dadc; }
+.match-card.stage-final::before { background: var(--gold); width: 4px; }
+
+/* Time column */
+.match-time {
+  text-align: center;
+}
+.match-time .time-main {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+}
+.match-time .time-date-note {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* Team */
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.team.away { flex-direction: row-reverse; }
+.team-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
+.team-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+.team.away .team-name { text-align: right; }
+.team-name.tbd { color: var(--text3); font-style: italic; }
+
+/* VS / Center */
+.match-center {
+  text-align: center;
+  flex-shrink: 0;
+}
+.vs-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: var(--text3);
+  letter-spacing: 2px;
+}
+
+/* Right meta */
+.match-meta {
+  text-align: right;
+}
+.match-group {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--border);
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+.match-group.knockout-badge {
+  background: rgba(0,180,216,0.15);
+  color: var(--r32-color);
+  border: 1px solid rgba(0,180,216,0.3);
+}
+.match-group.final-badge {
+  background: rgba(240,165,0,0.15);
+  color: var(--gold);
+  border: 1px solid rgba(240,165,0,0.3);
+}
+.match-venue {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Today time indicator */
+.today-card .match-time .time-main {
+  text-shadow: 0 0 12px rgba(240,165,0,0.5);
+}
+
+/* ===================== KNOCKOUT BRACKET NOTE ===================== */
+.ko-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0,180,216,0.05);
+  border: 1px solid rgba(0,180,216,0.15);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.ko-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--r32-color);
+  flex-shrink: 0;
+}
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+  font-size: 16px;
+}
+
+/* ===================== FOOTER ===================== */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+  font-size: 12px;
+  letter-spacing: 2px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===================== SCROLL TO TODAY ===================== */
+.scroll-today-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 16px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: 24px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(240,165,0,0.3);
+  transition: all 0.2s;
+  z-index: 200;
+}
+.scroll-today-btn:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(240,165,0,0.4);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 600px) {
+  .header-inner { gap: 10px; }
+  .brand-title { font-size: 22px; }
+  .brand-sub { display: none; }
+  .live-clock { display: none; }
+  .match-card {
+    grid-template-columns: 60px 1fr 28px 1fr 70px;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  .team-flag { font-size: 18px; }
+  .team-name { font-size: 13px; }
+  .match-time .time-main { font-size: 16px; }
+  .match-group { display: none; }
+  .match-venue { display: none; }
+  .match-meta { display: none; }
+  .match-card {
+    grid-template-columns: 56px 1fr 26px 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-title">⚽ WORLD CUP 2026</div>
+      <div class="brand-sub">观赛时区指南</div>
+    </div>
+    <div class="tz-toggle" id="tzToggle">
+      <div class="tz-slider" id="tzSlider"></div>
+      <button class="tz-btn active" id="btnRiyadh" onclick="setTZ('riyadh')">
+        <span class="tz-name">🇸🇦 利雅得</span>
+        <span class="tz-label">UTC +3</span>
+      </button>
+      <button class="tz-btn" id="btnBeijing" onclick="setTZ('beijing')">
+        <span class="tz-name">🇨🇳 北京</span>
+        <span class="tz-label">UTC +8</span>
+      </button>
+    </div>
+    <div class="live-clock">
+      <div class="clock-label" id="clockLabel">RIYADH TIME</div>
+      <div class="clock-time" id="clockTime">--:--:--</div>
+    </div>
+  </div>
+</header>
+
+<!-- FILTERS -->
+<div class="filters">
+  <div class="filters-inner" id="filterBar">
+    <button class="filt-btn active" onclick="filterStage('all', this)">全部赛程</button>
+    <button class="filt-btn" onclick="filterStage('group', this)">小组赛</button>
+    <button class="filt-btn" onclick="filterStage('knockout', this)">淘汰赛</button>
+    <button class="filt-btn" onclick="filterStage('upcoming', this)">待播赛事</button>
+    <div style="width:1px;background:var(--border);margin:0 4px;flex-shrink:0;"></div>
+    <button class="filt-btn" onclick="filterGroup('A', this)">A组</button>
+    <button class="filt-btn" onclick="filterGroup('B', this)">B组</button>
+    <button class="filt-btn" onclick="filterGroup('C', this)">C组</button>
+    <button class="filt-btn" onclick="filterGroup('D', this)">D组</button>
+    <button class="filt-btn" onclick="filterGroup('E', this)">E组</button>
+    <button class="filt-btn" onclick="filterGroup('F', this)">F组</button>
+    <button class="filt-btn" onclick="filterGroup('G', this)">G组</button>
+    <button class="filt-btn" onclick="filterGroup('H', this)">H组</button>
+    <button class="filt-btn" onclick="filterGroup('I', this)">I组</button>
+    <button class="filt-btn" onclick="filterGroup('J', this)">J组</button>
+    <button class="filt-btn" onclick="filterGroup('K', this)">K组</button>
+    <button class="filt-btn" onclick="filterGroup('L', this)">L组</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main id="main"></main>
+
+<button class="scroll-today-btn" onclick="scrollToToday()">📍 今日赛事</button>
+
+<footer>
+  FIFA WORLD CUP 2026 · USA / CANADA / MEXICO · 所有时间可切换显示
+</footer>
+
+<script>
+// =============================================
+// DATA
+// =============================================
+const MATCHES = [
+// ---- PAST (June 11-15) ---- (Group stage MD1, Groups A-J)
+{id:1, utcDate:'2026-06-11', utcTime:'14:00', home:{n:'巴西',f:'🇧🇷'}, away:{n:'澳大利亚',f:'🇦🇺'}, venue:'MetLife Stadium', city:'纽约', group:'A', stage:'group'},
+{id:2, utcDate:'2026-06-11', utcTime:'17:00', home:{n:'法国',f:'🇫🇷'}, away:{n:'塞内加尔',f:'🇸🇳'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'A', stage:'group'},
+{id:3, utcDate:'2026-06-11', utcTime:'20:00', home:{n:'阿根廷',f:'🇦🇷'}, away:{n:'摩洛哥',f:'🇲🇦'}, venue:'Rose Bowl', city:'洛杉矶', group:'B', stage:'group'},
+{id:4, utcDate:'2026-06-11', utcTime:'23:00', home:{n:'英格兰',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'}, away:{n:'伊朗',f:'🇮🇷'}, venue:'SoFi Stadium', city:'洛杉矶', group:'B', stage:'group'},
+{id:5, utcDate:'2026-06-12', utcTime:'14:00', home:{n:'西班牙',f:'🇪🇸'}, away:{n:'日本',f:'🇯🇵'}, venue:'AT&T Stadium', city:'达拉斯', group:'C', stage:'group'},
+{id:6, utcDate:'2026-06-12', utcTime:'17:00', home:{n:'德国',f:'🇩🇪'}, away:{n:'美国',f:'🇺🇸'}, venue:'Levi\'s Stadium', city:'旧金山', group:'C', stage:'group'},
+{id:7, utcDate:'2026-06-12', utcTime:'20:00', home:{n:'荷兰',f:'🇳🇱'}, away:{n:'尼日利亚',f:'🇳🇬'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'D', stage:'group'},
+{id:8, utcDate:'2026-06-12', utcTime:'23:00', home:{n:'墨西哥',f:'🇲🇽'}, away:{n:'波兰',f:'🇵🇱'}, venue:'Estadio Azteca', city:'墨西哥城', group:'D', stage:'group'},
+{id:9, utcDate:'2026-06-13', utcTime:'14:00', home:{n:'葡萄牙',f:'🇵🇹'}, away:{n:'韩国',f:'🇰🇷'}, venue:'Lincoln Financial Field', city:'费城', group:'E', stage:'group'},
+{id:10, utcDate:'2026-06-13', utcTime:'17:00', home:{n:'哥伦比亚',f:'🇨🇴'}, away:{n:'奥地利',f:'🇦🇹'}, venue:'Gillette Stadium', city:'波士顿', group:'E', stage:'group'},
+{id:11, utcDate:'2026-06-13', utcTime:'20:00', home:{n:'意大利',f:'🇮🇹'}, away:{n:'克罗地亚',f:'🇭🇷'}, venue:'MetLife Stadium', city:'纽约', group:'F', stage:'group'},
+{id:12, utcDate:'2026-06-13', utcTime:'23:00', home:{n:'沙特阿拉伯',f:'🇸🇦'}, away:{n:'智利',f:'🇨🇱'}, venue:'AT&T Stadium', city:'达拉斯', group:'F', stage:'group'},
+{id:13, utcDate:'2026-06-14', utcTime:'14:00', home:{n:'比利时',f:'🇧🇪'}, away:{n:'丹麦',f:'🇩🇰'}, venue:'Rose Bowl', city:'洛杉矶', group:'G', stage:'group'},
+{id:14, utcDate:'2026-06-14', utcTime:'17:00', home:{n:'乌拉圭',f:'🇺🇾'}, away:{n:'突尼斯',f:'🇹🇳'}, venue:'SoFi Stadium', city:'洛杉矶', group:'G', stage:'group'},
+{id:15, utcDate:'2026-06-14', utcTime:'20:00', home:{n:'厄瓜多尔',f:'🇪🇨'}, away:{n:'瑞士',f:'🇨🇭'}, venue:'Lumen Field', city:'西雅图', group:'H', stage:'group'},
+{id:16, utcDate:'2026-06-14', utcTime:'23:00', home:{n:'塞尔维亚',f:'🇷🇸'}, away:{n:'喀麦隆',f:'🇨🇲'}, venue:'BC Place', city:'温哥华', group:'H', stage:'group'},
+{id:17, utcDate:'2026-06-15', utcTime:'14:00', home:{n:'土耳其',f:'🇹🇷'}, away:{n:'洪都拉斯',f:'🇭🇳'}, venue:'Estadio Azteca', city:'墨西哥城', group:'I', stage:'group'},
+{id:18, utcDate:'2026-06-15', utcTime:'17:00', home:{n:'埃及',f:'🇪🇬'}, away:{n:'新西兰',f:'🇳🇿'}, venue:'Estadio BBVA', city:'蒙特雷', group:'I', stage:'group'},
+{id:19, utcDate:'2026-06-15', utcTime:'20:00', home:{n:'加拿大',f:'🇨🇦'}, away:{n:'哥斯达黎加',f:'🇨🇷'}, venue:'BMO Field', city:'多伦多', group:'J', stage:'group'},
+{id:20, utcDate:'2026-06-15', utcTime:'23:00', home:{n:'加纳',f:'🇬🇭'}, away:{n:'阿尔及利亚',f:'🇩🇿'}, venue:'Levi\'s Stadium', city:'旧金山', group:'J', stage:'group'},
+
+// ---- TODAY (June 16) ---- Group K & L, MD1
+{id:21, utcDate:'2026-06-16', utcTime:'14:00', home:{n:'苏格兰',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}, away:{n:'委内瑞拉',f:'🇻🇪'}, venue:'AT&T Stadium', city:'达拉斯', group:'K', stage:'group'},
+{id:22, utcDate:'2026-06-16', utcTime:'17:00', home:{n:'卡塔尔',f:'🇶🇦'}, away:{n:'南非',f:'🇿🇦'}, venue:'Mercedes-Benz Stadium', city:'亚特兰大', group:'K', stage:'group'},
+{id:23, utcDate:'2026-06-16', utcTime:'20:00', home:{n:'巴拿马',f:'🇵🇦'}, away:{n:'乌兹别克斯坦',f:'🇺🇿'}, venue:'Lumen Field', city:'西雅图', group:'L', stage:'group'},
+{id:24, utcDate:'2026-06-16', utcTime:'23:00', home:{n:'马里',f:'🇲🇱'}, away:{n:'巴林',f:'🇧🇭'}, venue:'BC Place', city:'温哥华', group:'L', stage:'group'},
+
+// ---- Group Stage MD2 ----
+{id:25, utcDate:'2026-06-17', utcTime:'14:00', home:{n:'巴西',f:'🇧🇷'}, away:{n:'法国',f:'🇫🇷'}, venue:'MetLife Stadium', city:'纽约', group:'A', stage:'group'},
+{id:26, utcDate:'2026-06-17', utcTime:'17:00', home:{n:'澳大利亚',f:'🇦🇺'}, away:{n:'塞内加尔',f:'🇸🇳'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'A', stage:'group'},
+{id:27, utcDate:'2026-06-17', utcTime:'20:00', home:{n:'阿根廷',f:'🇦🇷'}, away:{n:'英格兰',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'}, venue:'Rose Bowl', city:'洛杉矶', group:'B', stage:'group'},
+{id:28, utcDate:'2026-06-17', utcTime:'23:00', home:{n:'摩洛哥',f:'🇲🇦'}, away:{n:'伊朗',f:'🇮🇷'}, venue:'SoFi Stadium', city:'洛杉矶', group:'B', stage:'group'},
+
+{id:29, utcDate:'2026-06-18', utcTime:'14:00', home:{n:'西班牙',f:'🇪🇸'}, away:{n:'德国',f:'🇩🇪'}, venue:'AT&T Stadium', city:'达拉斯', group:'C', stage:'group'},
+{id:30, utcDate:'2026-06-18', utcTime:'17:00', home:{n:'日本',f:'🇯🇵'}, away:{n:'美国',f:'🇺🇸'}, venue:'Levi\'s Stadium', city:'旧金山', group:'C', stage:'group'},
+{id:31, utcDate:'2026-06-18', utcTime:'20:00', home:{n:'荷兰',f:'🇳🇱'}, away:{n:'墨西哥',f:'🇲🇽'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'D', stage:'group'},
+{id:32, utcDate:'2026-06-18', utcTime:'23:00', home:{n:'尼日利亚',f:'🇳🇬'}, away:{n:'波兰',f:'🇵🇱'}, venue:'Lincoln Financial Field', city:'费城', group:'D', stage:'group'},
+
+{id:33, utcDate:'2026-06-19', utcTime:'14:00', home:{n:'葡萄牙',f:'🇵🇹'}, away:{n:'哥伦比亚',f:'🇨🇴'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'E', stage:'group'},
+{id:34, utcDate:'2026-06-19', utcTime:'17:00', home:{n:'韩国',f:'🇰🇷'}, away:{n:'奥地利',f:'🇦🇹'}, venue:'Gillette Stadium', city:'波士顿', group:'E', stage:'group'},
+{id:35, utcDate:'2026-06-19', utcTime:'20:00', home:{n:'意大利',f:'🇮🇹'}, away:{n:'沙特阿拉伯',f:'🇸🇦'}, venue:'MetLife Stadium', city:'纽约', group:'F', stage:'group'},
+{id:36, utcDate:'2026-06-19', utcTime:'23:00', home:{n:'克罗地亚',f:'🇭🇷'}, away:{n:'智利',f:'🇨🇱'}, venue:'AT&T Stadium', city:'达拉斯', group:'F', stage:'group'},
+
+{id:37, utcDate:'2026-06-20', utcTime:'14:00', home:{n:'比利时',f:'🇧🇪'}, away:{n:'乌拉圭',f:'🇺🇾'}, venue:'Rose Bowl', city:'洛杉矶', group:'G', stage:'group'},
+{id:38, utcDate:'2026-06-20', utcTime:'17:00', home:{n:'丹麦',f:'🇩🇰'}, away:{n:'突尼斯',f:'🇹🇳'}, venue:'SoFi Stadium', city:'洛杉矶', group:'G', stage:'group'},
+{id:39, utcDate:'2026-06-20', utcTime:'20:00', home:{n:'厄瓜多尔',f:'🇪🇨'}, away:{n:'塞尔维亚',f:'🇷🇸'}, venue:'Lumen Field', city:'西雅图', group:'H', stage:'group'},
+{id:40, utcDate:'2026-06-20', utcTime:'23:00', home:{n:'瑞士',f:'🇨🇭'}, away:{n:'喀麦隆',f:'🇨🇲'}, venue:'BC Place', city:'温哥华', group:'H', stage:'group'},
+
+{id:41, utcDate:'2026-06-21', utcTime:'14:00', home:{n:'土耳其',f:'🇹🇷'}, away:{n:'埃及',f:'🇪🇬'}, venue:'Estadio Azteca', city:'墨西哥城', group:'I', stage:'group'},
+{id:42, utcDate:'2026-06-21', utcTime:'17:00', home:{n:'洪都拉斯',f:'🇭🇳'}, away:{n:'新西兰',f:'🇳🇿'}, venue:'Estadio BBVA', city:'蒙特雷', group:'I', stage:'group'},
+{id:43, utcDate:'2026-06-21', utcTime:'20:00', home:{n:'加拿大',f:'🇨🇦'}, away:{n:'加纳',f:'🇬🇭'}, venue:'BMO Field', city:'多伦多', group:'J', stage:'group'},
+{id:44, utcDate:'2026-06-21', utcTime:'23:00', home:{n:'哥斯达黎加',f:'🇨🇷'}, away:{n:'阿尔及利亚',f:'🇩🇿'}, venue:'Levi\'s Stadium', city:'旧金山', group:'J', stage:'group'},
+
+{id:45, utcDate:'2026-06-22', utcTime:'14:00', home:{n:'苏格兰',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}, away:{n:'卡塔尔',f:'🇶🇦'}, venue:'Mercedes-Benz Stadium', city:'亚特兰大', group:'K', stage:'group'},
+{id:46, utcDate:'2026-06-22', utcTime:'17:00', home:{n:'委内瑞拉',f:'🇻🇪'}, away:{n:'南非',f:'🇿🇦'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'K', stage:'group'},
+{id:47, utcDate:'2026-06-22', utcTime:'20:00', home:{n:'巴拿马',f:'🇵🇦'}, away:{n:'马里',f:'🇲🇱'}, venue:'Gillette Stadium', city:'波士顿', group:'L', stage:'group'},
+{id:48, utcDate:'2026-06-22', utcTime:'23:00', home:{n:'乌兹别克斯坦',f:'🇺🇿'}, away:{n:'巴林',f:'🇧🇭'}, venue:'Lincoln Financial Field', city:'费城', group:'L', stage:'group'},
+
+// ---- Group Stage MD3 (simultaneous) ----
+{id:49, utcDate:'2026-06-23', utcTime:'20:00', home:{n:'巴西',f:'🇧🇷'}, away:{n:'塞内加尔',f:'🇸🇳'}, venue:'MetLife Stadium', city:'纽约', group:'A', stage:'group'},
+{id:50, utcDate:'2026-06-23', utcTime:'20:00', home:{n:'法国',f:'🇫🇷'}, away:{n:'澳大利亚',f:'🇦🇺'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'A', stage:'group'},
+{id:51, utcDate:'2026-06-23', utcTime:'23:00', home:{n:'阿根廷',f:'🇦🇷'}, away:{n:'伊朗',f:'🇮🇷'}, venue:'Rose Bowl', city:'洛杉矶', group:'B', stage:'group'},
+{id:52, utcDate:'2026-06-23', utcTime:'23:00', home:{n:'英格兰',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'}, away:{n:'摩洛哥',f:'🇲🇦'}, venue:'SoFi Stadium', city:'洛杉矶', group:'B', stage:'group'},
+
+{id:53, utcDate:'2026-06-24', utcTime:'20:00', home:{n:'西班牙',f:'🇪🇸'}, away:{n:'美国',f:'🇺🇸'}, venue:'AT&T Stadium', city:'达拉斯', group:'C', stage:'group'},
+{id:54, utcDate:'2026-06-24', utcTime:'20:00', home:{n:'德国',f:'🇩🇪'}, away:{n:'日本',f:'🇯🇵'}, venue:'Levi\'s Stadium', city:'旧金山', group:'C', stage:'group'},
+{id:55, utcDate:'2026-06-24', utcTime:'23:00', home:{n:'荷兰',f:'🇳🇱'}, away:{n:'波兰',f:'🇵🇱'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'D', stage:'group'},
+{id:56, utcDate:'2026-06-24', utcTime:'23:00', home:{n:'墨西哥',f:'🇲🇽'}, away:{n:'尼日利亚',f:'🇳🇬'}, venue:'Estadio Azteca', city:'墨西哥城', group:'D', stage:'group'},
+
+{id:57, utcDate:'2026-06-25', utcTime:'20:00', home:{n:'葡萄牙',f:'🇵🇹'}, away:{n:'奥地利',f:'🇦🇹'}, venue:'MetLife Stadium', city:'纽约', group:'E', stage:'group'},
+{id:58, utcDate:'2026-06-25', utcTime:'20:00', home:{n:'哥伦比亚',f:'🇨🇴'}, away:{n:'韩国',f:'🇰🇷'}, venue:'Gillette Stadium', city:'波士顿', group:'E', stage:'group'},
+{id:59, utcDate:'2026-06-25', utcTime:'23:00', home:{n:'意大利',f:'🇮🇹'}, away:{n:'智利',f:'🇨🇱'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'F', stage:'group'},
+{id:60, utcDate:'2026-06-25', utcTime:'23:00', home:{n:'沙特阿拉伯',f:'🇸🇦'}, away:{n:'克罗地亚',f:'🇭🇷'}, venue:'Lincoln Financial Field', city:'费城', group:'F', stage:'group'},
+
+{id:61, utcDate:'2026-06-26', utcTime:'20:00', home:{n:'比利时',f:'🇧🇪'}, away:{n:'突尼斯',f:'🇹🇳'}, venue:'Rose Bowl', city:'洛杉矶', group:'G', stage:'group'},
+{id:62, utcDate:'2026-06-26', utcTime:'20:00', home:{n:'乌拉圭',f:'🇺🇾'}, away:{n:'丹麦',f:'🇩🇰'}, venue:'SoFi Stadium', city:'洛杉矶', group:'G', stage:'group'},
+{id:63, utcDate:'2026-06-26', utcTime:'23:00', home:{n:'厄瓜多尔',f:'🇪🇨'}, away:{n:'喀麦隆',f:'🇨🇲'}, venue:'Lumen Field', city:'西雅图', group:'H', stage:'group'},
+{id:64, utcDate:'2026-06-26', utcTime:'23:00', home:{n:'塞尔维亚',f:'🇷🇸'}, away:{n:'瑞士',f:'🇨🇭'}, venue:'BC Place', city:'温哥华', group:'H', stage:'group'},
+
+{id:65, utcDate:'2026-06-27', utcTime:'17:00', home:{n:'土耳其',f:'🇹🇷'}, away:{n:'新西兰',f:'🇳🇿'}, venue:'Estadio Azteca', city:'墨西哥城', group:'I', stage:'group'},
+{id:66, utcDate:'2026-06-27', utcTime:'17:00', home:{n:'埃及',f:'🇪🇬'}, away:{n:'洪都拉斯',f:'🇭🇳'}, venue:'Estadio BBVA', city:'蒙特雷', group:'I', stage:'group'},
+{id:67, utcDate:'2026-06-27', utcTime:'17:00', home:{n:'加拿大',f:'🇨🇦'}, away:{n:'阿尔及利亚',f:'🇩🇿'}, venue:'BMO Field', city:'多伦多', group:'J', stage:'group'},
+{id:68, utcDate:'2026-06-27', utcTime:'17:00', home:{n:'加纳',f:'🇬🇭'}, away:{n:'哥斯达黎加',f:'🇨🇷'}, venue:'Levi\'s Stadium', city:'旧金山', group:'J', stage:'group'},
+{id:69, utcDate:'2026-06-27', utcTime:'20:00', home:{n:'苏格兰',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}, away:{n:'南非',f:'🇿🇦'}, venue:'AT&T Stadium', city:'达拉斯', group:'K', stage:'group'},
+{id:70, utcDate:'2026-06-27', utcTime:'20:00', home:{n:'卡塔尔',f:'🇶🇦'}, away:{n:'委内瑞拉',f:'🇻🇪'}, venue:'Mercedes-Benz Stadium', city:'亚特兰大', group:'K', stage:'group'},
+{id:71, utcDate:'2026-06-27', utcTime:'20:00', home:{n:'巴拿马',f:'🇵🇦'}, away:{n:'巴林',f:'🇧🇭'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'L', stage:'group'},
+{id:72, utcDate:'2026-06-27', utcTime:'20:00', home:{n:'马里',f:'🇲🇱'}, away:{n:'乌兹别克斯坦',f:'🇺🇿'}, venue:'Gillette Stadium', city:'波士顿', group:'L', stage:'group'},
+
+// ---- ROUND OF 32 ----
+{id:73, utcDate:'2026-06-29', utcTime:'17:00', home:{n:'A组1',f:'🏆'}, away:{n:'B组3*',f:'🏅'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:74, utcDate:'2026-06-29', utcTime:'20:00', home:{n:'C组1',f:'🏆'}, away:{n:'D组3*',f:'🏅'}, venue:'Rose Bowl', city:'洛杉矶', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:75, utcDate:'2026-06-29', utcTime:'23:00', home:{n:'E组1',f:'🏆'}, away:{n:'F组3*',f:'🏅'}, venue:'AT&T Stadium', city:'达拉斯', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:76, utcDate:'2026-06-30', utcTime:'17:00', home:{n:'G组1',f:'🏆'}, away:{n:'H组3*',f:'🏅'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:77, utcDate:'2026-06-30', utcTime:'20:00', home:{n:'I组1',f:'🏆'}, away:{n:'J组3*',f:'🏅'}, venue:'Levi\'s Stadium', city:'旧金山', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:78, utcDate:'2026-06-30', utcTime:'23:00', home:{n:'K组1',f:'🏆'}, away:{n:'L组3*',f:'🏅'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:79, utcDate:'2026-07-01', utcTime:'17:00', home:{n:'B组1',f:'🏆'}, away:{n:'A组3*',f:'🏅'}, venue:'SoFi Stadium', city:'洛杉矶', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:80, utcDate:'2026-07-01', utcTime:'20:00', home:{n:'D组1',f:'🏆'}, away:{n:'C组3*',f:'🏅'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:81, utcDate:'2026-07-01', utcTime:'23:00', home:{n:'F组1',f:'🏆'}, away:{n:'E组3*',f:'🏅'}, venue:'Lincoln Financial Field', city:'费城', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:82, utcDate:'2026-07-02', utcTime:'17:00', home:{n:'H组1',f:'🏆'}, away:{n:'G组3*',f:'🏅'}, venue:'BC Place', city:'温哥华', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:83, utcDate:'2026-07-02', utcTime:'20:00', home:{n:'J组1',f:'🏆'}, away:{n:'I组3*',f:'🏅'}, venue:'Lumen Field', city:'西雅图', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:84, utcDate:'2026-07-02', utcTime:'23:00', home:{n:'L组1',f:'🏆'}, away:{n:'K组3*',f:'🏅'}, venue:'Estadio Azteca', city:'墨西哥城', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:85, utcDate:'2026-07-03', utcTime:'17:00', home:{n:'A组2',f:'🥈'}, away:{n:'B组2',f:'🥈'}, venue:'AT&T Stadium', city:'达拉斯', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:86, utcDate:'2026-07-03', utcTime:'20:00', home:{n:'C组2',f:'🥈'}, away:{n:'D组2',f:'🥈'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:87, utcDate:'2026-07-04', utcTime:'17:00', home:{n:'E组2',f:'🥈'}, away:{n:'F组2',f:'🥈'}, venue:'Rose Bowl', city:'洛杉矶', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+{id:88, utcDate:'2026-07-04', utcTime:'20:00', home:{n:'G组2',f:'🥈'}, away:{n:'H组2',f:'🥈'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'淘汰赛', stage:'r32', stageLabel:'32强'},
+
+// ---- ROUND OF 16 ----
+{id:89, utcDate:'2026-07-06', utcTime:'20:00', home:{n:'32强胜者1',f:'⚽'}, away:{n:'32强胜者2',f:'⚽'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:90, utcDate:'2026-07-06', utcTime:'23:00', home:{n:'32强胜者3',f:'⚽'}, away:{n:'32强胜者4',f:'⚽'}, venue:'AT&T Stadium', city:'达拉斯', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:91, utcDate:'2026-07-07', utcTime:'20:00', home:{n:'32强胜者5',f:'⚽'}, away:{n:'32强胜者6',f:'⚽'}, venue:'Rose Bowl', city:'洛杉矶', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:92, utcDate:'2026-07-07', utcTime:'23:00', home:{n:'32强胜者7',f:'⚽'}, away:{n:'32强胜者8',f:'⚽'}, venue:'Hard Rock Stadium', city:'迈阿密', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:93, utcDate:'2026-07-08', utcTime:'20:00', home:{n:'32强胜者9',f:'⚽'}, away:{n:'32强胜者10',f:'⚽'}, venue:'SoFi Stadium', city:'洛杉矶', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:94, utcDate:'2026-07-08', utcTime:'23:00', home:{n:'32强胜者11',f:'⚽'}, away:{n:'32强胜者12',f:'⚽'}, venue:'Levi\'s Stadium', city:'旧金山', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:95, utcDate:'2026-07-09', utcTime:'20:00', home:{n:'32强胜者13',f:'⚽'}, away:{n:'32强胜者14',f:'⚽'}, venue:'Lincoln Financial Field', city:'费城', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+{id:96, utcDate:'2026-07-09', utcTime:'23:00', home:{n:'32强胜者15',f:'⚽'}, away:{n:'32强胜者16',f:'⚽'}, venue:'Arrowhead Stadium', city:'堪萨斯城', group:'淘汰赛', stage:'r16', stageLabel:'16强'},
+
+// ---- QUARTERFINALS ----
+{id:97, utcDate:'2026-07-11', utcTime:'20:00', home:{n:'16强胜者1',f:'⚽'}, away:{n:'16强胜者2',f:'⚽'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'qf', stageLabel:'四分之一决赛'},
+{id:98, utcDate:'2026-07-11', utcTime:'23:00', home:{n:'16强胜者3',f:'⚽'}, away:{n:'16强胜者4',f:'⚽'}, venue:'Rose Bowl', city:'洛杉矶', group:'淘汰赛', stage:'qf', stageLabel:'四分之一决赛'},
+{id:99, utcDate:'2026-07-12', utcTime:'20:00', home:{n:'16强胜者5',f:'⚽'}, away:{n:'16强胜者6',f:'⚽'}, venue:'AT&T Stadium', city:'达拉斯', group:'淘汰赛', stage:'qf', stageLabel:'四分之一决赛'},
+{id:100, utcDate:'2026-07-12', utcTime:'23:00', home:{n:'16强胜者7',f:'⚽'}, away:{n:'16强胜者8',f:'⚽'}, venue:'SoFi Stadium', city:'洛杉矶', group:'淘汰赛', stage:'qf', stageLabel:'四分之一决赛'},
+
+// ---- SEMIFINALS ----
+{id:101, utcDate:'2026-07-15', utcTime:'23:00', home:{n:'四强胜者1',f:'🔥'}, away:{n:'四强胜者2',f:'🔥'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'sf', stageLabel:'半决赛'},
+{id:102, utcDate:'2026-07-16', utcTime:'23:00', home:{n:'四强胜者3',f:'🔥'}, away:{n:'四强胜者4',f:'🔥'}, venue:'Rose Bowl', city:'洛杉矶', group:'淘汰赛', stage:'sf', stageLabel:'半决赛'},
+
+// ---- THIRD PLACE ----
+{id:103, utcDate:'2026-07-19', utcTime:'20:00', home:{n:'半决赛负者1',f:'🥉'}, away:{n:'半决赛负者2',f:'🥉'}, venue:'AT&T Stadium', city:'达拉斯', group:'淘汰赛', stage:'sf', stageLabel:'三四名决赛'},
+
+// ---- FINAL ----
+{id:104, utcDate:'2026-07-19', utcTime:'23:00', home:{n:'半决赛胜者1',f:'🏆'}, away:{n:'半决赛胜者2',f:'🏆'}, venue:'MetLife Stadium', city:'纽约', group:'淘汰赛', stage:'final', stageLabel:'⭐ 决赛 ⭐'},
+];
+
+// =============================================
+// STATE
+// =============================================
+let currentTZ = 'riyadh'; // 'riyadh' | 'beijing'
+let currentStageFilter = 'all';
+let currentGroupFilter = null;
+const TODAY_UTC = '2026-06-16';
+
+const TZ_OFFSET = { riyadh: 3, beijing: 8 };
+
+// =============================================
+// TIME UTILS
+// =============================================
+function utcToLocal(dateStr, timeStr, tzName) {
+  const offset = TZ_OFFSET[tzName];
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const [h, min] = timeStr.split(':').map(Number);
+  let localH = h + offset;
+  let dayShift = 0;
+  if (localH >= 24) { localH -= 24; dayShift = 1; }
+  const hStr = String(localH).padStart(2, '0');
+  const mStr = String(min).padStart(2, '0');
+  // Compute local date
+  const dt = new Date(Date.UTC(y, m-1, d));
+  dt.setUTCDate(dt.getUTCDate() + dayShift);
+  const localDate = `${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,'0')}-${String(dt.getUTCDate()).padStart(2,'0')}`;
+  return { time: `${hStr}:${mStr}`, date: localDate, nextDay: dayShift > 0 };
+}
+
+function getLocalDateString(utcDate, utcTime, tz) {
+  return utcToLocal(utcDate, utcTime, tz).date;
+}
+
+function formatDisplayDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const days = ['周日','周一','周二','周三','周四','周五','周六'];
+  const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  return `${m}月${d}日 ${days[dt.getDay()]}`;
+}
+
+function isBeforeToday(utcDate) {
+  return utcDate < TODAY_UTC;
+}
+function isToday(utcDate) {
+  return utcDate === TODAY_UTC;
+}
+
+// =============================================
+// RENDER
+// =============================================
+function render() {
+  const main = document.getElementById('main');
+
+  // Group matches by LOCAL date
+  const dateMap = new Map();
+  MATCHES.forEach(m => {
+    // Filter
+    if (currentStageFilter === 'group' && m.stage !== 'group') return;
+    if (currentStageFilter === 'knockout' && m.stage === 'group') return;
+    if (currentStageFilter === 'upcoming' && isBeforeToday(m.utcDate)) return;
+    if (currentGroupFilter && m.group !== currentGroupFilter) return;
+
+    const localDate = getLocalDateString(m.utcDate, m.utcTime, currentTZ);
+    if (!dateMap.has(localDate)) dateMap.set(localDate, []);
+    dateMap.get(localDate).push(m);
+  });
+
+  // Sort dates
+  const sortedDates = Array.from(dateMap.keys()).sort();
+
+  if (sortedDates.length === 0) {
+    main.innerHTML = '<div class="empty-state">暂无符合条件的赛事</div>';
+    return;
+  }
+
+  let html = '';
+  sortedDates.forEach(localDate => {
+    const matches = dateMap.get(localDate);
+    // Determine if this local date is "today" — check if any match's utcDate is today
+    const hasToday = matches.some(m => isToday(m.utcDate));
+    const allPast = matches.every(m => isBeforeToday(m.utcDate));
+    const dateId = `date-${localDate}`;
+
+    html += `<div class="date-group" id="${dateId}">`;
+    html += `<div class="date-header">
+      <span class="date-label ${hasToday ? 'today-label' : ''}">${formatDisplayDate(localDate)}</span>
+      ${hasToday ? '<span class="date-badge">今日</span>' : allPast ? '<span class="date-badge past-badge">已结束</span>' : ''}
+      <div class="date-line ${hasToday ? 'today-line' : ''}"></div>
+    </div>`;
+
+    // Check if this date has knockout matches
+    const hasKO = matches.some(m => m.stage !== 'group');
+    if (hasKO && !currentGroupFilter) {
+      html += `<div class="ko-note"><div class="ko-dot"></div>淘汰赛对阵将在小组赛结束后确定，以下为赛程安排</div>`;
+    }
+
+    matches.forEach(m => {
+      const local = utcToLocal(m.utcDate, m.utcTime, currentTZ);
+      const isPast = isBeforeToday(m.utcDate);
+      const isTodayMatch = isToday(m.utcDate);
+      const stageClass = m.stage !== 'group' ? `stage-${m.stage}` : '';
+      const cardClass = `match-card ${isTodayMatch ? 'today-card' : ''} ${isPast ? 'past-card' : ''} ${stageClass}`;
+
+      const groupBadge = m.stage === 'group'
+        ? `<span class="match-group">${m.group}组</span>`
+        : m.stage === 'final'
+          ? `<span class="match-group final-badge">${m.stageLabel || '决赛'}</span>`
+          : `<span class="match-group knockout-badge">${m.stageLabel || m.stage}</span>`;
+
+      const homeTBD = m.home.n.includes('组') || m.home.n.includes('强') || m.home.n.includes('者');
+      const awayTBD = m.away.n.includes('组') || m.away.n.includes('强') || m.away.n.includes('者');
+
+      html += `<div class="${cardClass}">
+        <div class="match-time">
+          <div class="time-main">${local.time}</div>
+          ${local.nextDay ? '<div class="time-date-note">次日</div>' : ''}
+        </div>
+        <div class="team home">
+          <span class="team-flag">${m.home.f}</span>
+          <span class="team-name ${homeTBD ? 'tbd' : ''}">${m.home.n}</span>
+        </div>
+        <div class="match-center"><span class="vs-text">VS</span></div>
+        <div class="team away">
+          <span class="team-flag">${m.away.f}</span>
+          <span class="team-name ${awayTBD ? 'tbd' : ''}">${m.away.n}</span>
+        </div>
+        <div class="match-meta">
+          ${groupBadge}
+          <div class="match-venue">${m.city}</div>
+        </div>
+      </div>`;
+    });
+
+    html += '</div>';
+  });
+
+  main.innerHTML = html;
+}
+
+// =============================================
+// TIMEZONE SWITCH
+// =============================================
+function setTZ(tz) {
+  currentTZ = tz;
+  document.getElementById('btnRiyadh').classList.toggle('active', tz === 'riyadh');
+  document.getElementById('btnBeijing').classList.toggle('active', tz === 'beijing');
+  document.getElementById('tzSlider').classList.toggle('beijing', tz === 'beijing');
+  document.getElementById('clockLabel').textContent = tz === 'riyadh' ? 'RIYADH TIME' : 'BEIJING TIME';
+  render();
+}
+
+// =============================================
+// FILTERS
+// =============================================
+function filterStage(stage, btn) {
+  currentStageFilter = stage;
+  currentGroupFilter = null;
+  document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function filterGroup(group, btn) {
+  if (currentGroupFilter === group) {
+    // toggle off
+    currentGroupFilter = null;
+    btn.classList.remove('active');
+    currentStageFilter = 'all';
+    document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filt-btn').classList.add('active');
+  } else {
+    currentGroupFilter = group;
+    currentStageFilter = 'all';
+    document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  render();
+}
+
+// =============================================
+// SCROLL TO TODAY
+// =============================================
+function scrollToToday() {
+  // Find the first date group that contains today's matches
+  const todayLocalDate = getLocalDateString(TODAY_UTC, '14:00', currentTZ);
+  const el = document.getElementById(`date-${todayLocalDate}`);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// =============================================
+// LIVE CLOCK
+// =============================================
+function updateClock() {
+  const now = new Date();
+  const offset = TZ_OFFSET[currentTZ];
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  const localMs = utcMs + offset * 3600000;
+  const localNow = new Date(localMs);
+  const h = String(localNow.getHours()).padStart(2, '0');
+  const m = String(localNow.getMinutes()).padStart(2, '0');
+  const s = String(localNow.getSeconds()).padStart(2, '0');
+  document.getElementById('clockTime').textContent = `${h}:${m}:${s}`;
+}
+
+// =============================================
+// INIT
+// =============================================
+render();
+updateClock();
+setInterval(updateClock, 1000);
+
+// Auto scroll to today on load
+setTimeout(() => scrollToToday(), 300);
+</script>
+</body>
+</html>
